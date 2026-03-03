@@ -9,6 +9,7 @@ import rewardRoute from "./routes/reward.route.js";
 import supportRoute from "./routes/supportFaq.route.js";
 import userRoute from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
+import transactionRoute from "./routes/transaction.route.js";
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -22,6 +23,7 @@ app.use("/api", rewardRoute);
 app.use("/api", supportRoute);
 app.use("/api/users", userRoute); 
 app.use("/api/auth", authRoute);
+app.use("/api/transactions", transactionRoute);
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
