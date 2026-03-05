@@ -9,10 +9,14 @@ export interface IEvent extends Document{
     version: string,
     map: string,
     matchRules: string,
-    feeType: string,
+    entryFee: number,
     pointsPerKill: number,
     sponseredBy: string,
-    spectacteUrl?:string
+    spectacteUrl?: string,
+    gameId: mongoose.Schema.Types.ObjectId
+    roomId?: string,
+    roomPassword?: string,
+    eventType: "Upcomming" | "Ongoing" | "Completed"
 }
 
 const EventSchema = new Schema<IEvent>({
@@ -48,8 +52,8 @@ const EventSchema = new Schema<IEvent>({
         type: String,
         required:true
     },
-    feeType: {
-        type: String,
+    entryFee: {
+        type: Number,
         required:true
     },
     pointsPerKill: {
@@ -63,6 +67,21 @@ const EventSchema = new Schema<IEvent>({
     spectacteUrl: {
         type: String,
     },
+    gameId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Game"
+    },
+    roomId: {
+        type: String,
+    },
+    roomPassword: {
+        type: String,
+    },
+    eventType: {
+        type: String,
+        enum: ["Upcomming", "Ongoing", "Completed"],
+        default: "Upcomming"
+    }
 }, { timestamps: true })
 
 const Event = mongoose.model<IEvent>("Event", EventSchema);
