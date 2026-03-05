@@ -7,12 +7,30 @@ export const getEvents = async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
+    const { search, startDate, endDate } = req.query;
+    const filter: any = {};
+    if (startDate || endDate) {
+      filter.matchDate = {};
+      if (startDate) {
+        filter.matchDate.$gte = new Date(startDate as string);
+      }
+      if (endDate) {
+        filter.matchDate.$lte = new Date(endDate as string);
+      }
+    }
 
-    const events = await Event.find()
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search as string, $options: "i" } },
+        { roomId: { $regex: search as string, $options: "i" } },
+      ];
+    }
+    const events = await Event.find(filter)
+      .populate("gameId", "name title")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
-    const total = await Event.countDocuments();
+    const total = events.length;
     res.status(200).json({
       success: true,
       data: events,
